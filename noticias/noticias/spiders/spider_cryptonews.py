@@ -6,6 +6,7 @@ from datetime import datetime
 from scrapy import Request
 from scrapy.utils.response import open_in_browser
 from noticias.items import NoticiasItem
+from noticias.time import time
 
 def clean_text(text, replace_commas_for_spaces=True):
     text = str(text)
@@ -43,6 +44,7 @@ class cryptonews(scrapy.Spider):
             link = n.xpath('./div/a/@href').extract_first()
             print("--------------")
             item = NoticiasItem()
+            date = time(date.strip())
             item['date'] = date
             item['title'] = clean_text(title)
             item['description'] = clean_text(descripcion)

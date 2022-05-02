@@ -2,7 +2,7 @@
 
 ## Start Vue
 1. Clone the project.
-2. ```python3 schedule```
+2. ```python3 schedule.py``` to run the spiders.
 3. In other console
 4. ```cd NewTime```
 5. ```npm install```

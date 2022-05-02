@@ -1,0 +1,6 @@
+# paginas scrapy
+cryptonews
+cryptoslate
+bitcoinmagazine
+newsbtc
+bitcoins

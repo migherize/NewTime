@@ -6,8 +6,8 @@ import re
 from datetime import datetime, timedelta
 from scrapy import Request
 from scrapy.utils.response import open_in_browser
-from noticias.items import NoticiasItem
 from noticias.time import time
+from noticias.items import NoticiasItem
 
 def clean_text(text, replace_commas_for_spaces=True):
     text = str(text)
@@ -23,28 +23,26 @@ def clean_text(text, replace_commas_for_spaces=True):
     return text
 
 
-class cryptoslate(scrapy.Spider):
-    name = 'cryptoslate'
+class newsbtc(scrapy.Spider):
+    name = 'newsbtc'
     
     def __init__(self, *args, **kwargs):
         self.schedule = kwargs.pop('schedule', '')  # path to where all workflows are stored
         print("self.schedule",self.schedule)
         
     def start_requests(self):
-        url = 'https://cryptoslate.com'
+        url = 'https://www.newsbtc.com'
         yield Request(url=url, callback=self.start_search, dont_filter=True)
 
     def start_search(self, response):
-        #print("url",response.url)
-        news = response.xpath('//div[contains(@class, "list-feed slate news clearfix")]/div[contains(@class, "list-post clearfix")]/article/a')
+        news = response.xpath('//div[contains(@class, "jeg_posts jeg_block_container")]/div[contains(@class, "jeg_posts")]/article[contains(@class, "jeg_post")]/div[contains(@class, "jeg_postblock_content")]')
         print("noticas",len(news))
         for n in news:
-            link = n.xpath('./@href').extract_first()
-            title = n.xpath('./div[contains(@class, "content")]/div[contains(@class, "title")]/h2/text()').extract_first()
-            date = n.xpath('./div[contains(@class, "content")]/div[contains(@class, "title")]/span/span[contains(@class, "read")]/text()').extract_first()
-            tema = ""
-            descripcion = n.xpath('./div[contains(@class, "excerpt")]/p/text()').extract_first()
-            print("--------------")
+            link = n.xpath('./h3/a/@href').extract_first()
+            title = n.xpath('./h3/a/text()').extract_first()
+            date = n.xpath('./div[contains(@class, "jeg_post_meta")]/div[contains(@class, "jeg_meta_date")]/a/text()').extract_first()
+            descripcion = n.xpath('./div[contains(@class, "jeg_post_excerpt")]/p/text()').extract_first()
+            
             item = NoticiasItem()
             date = time(date.strip())
             item['date'] = date
@@ -57,5 +55,4 @@ class cryptoslate(scrapy.Spider):
             yield item
 
     def open_page(self, response):
-        print("texto",response.text)
         open_in_browser(response)
