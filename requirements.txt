@@ -1,0 +1,7 @@
+#Python
+Python==3.9.9
+Scrapy==2.4.1
+
+# Vue
+node==14.17.4
+npm==6.14.14

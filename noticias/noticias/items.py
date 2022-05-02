@@ -9,9 +9,9 @@ import scrapy
 class NoticiasItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    date = scrapy.Field()
+    history = scrapy.Field()    
     title = scrapy.Field()
     description = scrapy.Field()
     link = scrapy.Field()
-    topic = scrapy.Field()
+    date = scrapy.Field()
     pass

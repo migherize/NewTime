@@ -23,7 +23,11 @@ def clean_text(text, replace_commas_for_spaces=True):
 
 class cryptonews(scrapy.Spider):
     name = 'cryptonews'
-
+    
+    def __init__(self, *args, **kwargs):
+        self.schedule = kwargs.pop('schedule', '')  # path to where all workflows are stored
+        print("self.schedule",self.schedule)
+        
     def start_requests(self):
         url = 'https://it.cryptonews.com'
         yield Request(url=url, callback=self.start_search, dont_filter=True)
@@ -37,14 +41,13 @@ class cryptonews(scrapy.Spider):
             title = n.xpath('./div/a[contains(@class, "article__title")]/text()').extract_first()
             descripcion = n.xpath('./div/div[contains(@class, "mb-25")]/text()').extract_first()
             link = n.xpath('./div/a/@href').extract_first()
-            tema = n.xpath('./div/div[contains(@class, "article__badge")]/a/text()').extract_first()
             print("--------------")
             item = NoticiasItem()
             item['date'] = date
             item['title'] = clean_text(title)
             item['description'] = clean_text(descripcion)
             item['link'] = response.url + link
-            item['topic'] = tema
+            item['history'] = str(self.schedule)
             print("item_spider",item)
             yield item
 

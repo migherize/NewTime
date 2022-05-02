@@ -24,7 +24,11 @@ def clean_text(text, replace_commas_for_spaces=True):
 
 class cryptoslate(scrapy.Spider):
     name = 'cryptoslate'
-
+    
+    def __init__(self, *args, **kwargs):
+        self.schedule = kwargs.pop('schedule', '')  # path to where all workflows are stored
+        print("self.schedule",self.schedule)
+        
     def start_requests(self):
         url = 'https://cryptoslate.com'
         yield Request(url=url, callback=self.start_search, dont_filter=True)
@@ -42,11 +46,22 @@ class cryptoslate(scrapy.Spider):
             print("--------------")
             item = NoticiasItem()
             fecha = re.findall(r'hours',date)
+            day = re.findall(r'days ago|day ago',date)
             if fecha:
                 hora = re.findall(r'^[0-9]+',date)
                 if hora:
                     today = datetime.now()
                     pubilicada = today - timedelta(hours = int(hora[0]))
+                    print("pubilicada: ",pubilicada)
+                    item['date'] = str(pubilicada)
+                else:
+                    item['date'] = date
+            
+            elif day:
+                num = re.findall(r'^[0-9]+',date)
+                if num:
+                    today = datetime.now()
+                    pubilicada = today - timedelta(days = int(num[0]))
                     print("pubilicada: ",pubilicada)
                     item['date'] = str(pubilicada)
                 else:
@@ -57,7 +72,8 @@ class cryptoslate(scrapy.Spider):
             item['title'] = clean_text(title)
             item['description'] = clean_text(descripcion)
             item['link'] = link
-            item['topic'] = tema
+            item['history'] = str(self.schedule)
+            
             print("item_spider",item)
             yield item
 

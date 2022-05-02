@@ -3,6 +3,9 @@ import time
 from datetime import datetime, timedelta
 
 while True:
-    subprocess.call(["scrapy","crawl","cryptonews"],cwd="./noticias")
-    subprocess.call(["scrapy","crawl","cryptoslate"],cwd="./noticias")
-    time.sleep(3600)
+    today = datetime.now()
+    dt_string = today.strftime("%d/%m/%Y %H:%M:%S")
+    schedule = "schedule={}".format(dt_string)
+    subprocess.call(["scrapy","crawl","cryptonews","-a",schedule],cwd="./noticias")
+    subprocess.call(["scrapy","crawl","cryptoslate","-a",schedule],cwd="./noticias")
+    time.sleep(60)
